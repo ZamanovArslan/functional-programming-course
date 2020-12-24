@@ -1,11 +1,14 @@
 module Part3 where
+import Data.List (group, delete)
 
 ------------------------------------------------------------
 -- PROBLEM #18
 --
 -- Проверить, является ли число N простым (1 <= N <= 10^9)
 prob18 :: Integer -> Bool
-prob18 = error "Implement me!"
+prob18 k = if k > 1
+           then null [ x | x <- [2..k - 1], k `mod` x == 0]
+           else False
 
 ------------------------------------------------------------
 -- PROBLEM #19
@@ -14,7 +17,7 @@ prob18 = error "Implement me!"
 -- разложении числа N (1 <= N <= 10^9). Простые делители
 -- должны быть расположены по возрастанию
 prob19 :: Integer -> [(Integer, Int)]
-prob19 = error "Implement me!"
+prob19 k = map (\divs -> (head divs, length divs)) (group ([x | x <- [2..k - 1], k `mod` x == 0 && null [a | a <- [2..x - 1], x `mod` a == 0]]))
 
 ------------------------------------------------------------
 -- PROBLEM #20
@@ -23,7 +26,7 @@ prob19 = error "Implement me!"
 -- Совершенное число равно сумме своих делителей (меньших
 -- самого числа)
 prob20 :: Integer -> Bool
-prob20 = error "Implement me!"
+prob20 k = sum [x | x <- [1..k - 1], k `mod` x == 0] == k
 
 ------------------------------------------------------------
 -- PROBLEM #21
@@ -31,7 +34,7 @@ prob20 = error "Implement me!"
 -- Вернуть список всех делителей числа N (1<=N<=10^10) в
 -- порядке возрастания
 prob21 :: Integer -> [Integer]
-prob21 = error "Implement me!"
+prob21 k = [ x | x <- [1..k], k `mod` x == 0]
 
 ------------------------------------------------------------
 -- PROBLEM #22
@@ -39,7 +42,10 @@ prob21 = error "Implement me!"
 -- Подсчитать произведение количеств букв i в словах из
 -- заданной строки (списка символов)
 prob22 :: String -> Integer
-prob22 = error "Implement me!"
+prob22 str = product $ (map count) (words str)
+    where
+      count :: String -> Integer
+      count wght = toInteger $ length (filter(=='i') wght)
 
 ------------------------------------------------------------
 -- PROBLEM #23
@@ -59,7 +65,9 @@ prob23 = error "Implement me!"
 -- представить как сумму чисел от 1 до какого-то K
 -- (1 <= N <= 10^10)
 prob24 :: Integer -> Bool
-prob24 = error "Implement me!"
+prob24 num = checkNum(sqrt (1 + 8 * fromInteger num)) == 0
+  where
+    checkNum x = x - fromIntegral (floor x)
 
 ------------------------------------------------------------
 -- PROBLEM #25
@@ -67,7 +75,13 @@ prob24 = error "Implement me!"
 -- Проверить, что запись числа является палиндромом (т.е.
 -- читается одинаково слева направо и справа налево)
 prob25 :: Integer -> Bool
-prob25 = error "Implement me!"
+prob25 x = reverser x == x
+
+reverser :: Integral a => a -> a
+reverser = funct 0
+  where
+    funct a 0 = a
+    funct a b = let (q, r) = quotRem b 10 in funct (a * 10 + r) q
 
 ------------------------------------------------------------
 -- PROBLEM #26
@@ -76,16 +90,21 @@ prob25 = error "Implement me!"
 -- сумма делителей одного (без учёта самого числа) равна
 -- другому, и наоборот
 prob26 :: Integer -> Integer -> Bool
-prob26 = error "Implement me!"
+prob26 m n = sum (dividers m) == n && sum (dividers n) == m
 
+dividers :: Integer -> [Integer]
+dividers k = [x | x <- [1..k - 1], k `mod` x == 0]
 ------------------------------------------------------------
 -- PROBLEM #27
 --
 -- Найти в списке два числа, сумма которых равна заданному.
 -- Длина списка не превосходит 500
 prob27 :: Int -> [Int] -> Maybe (Int, Int)
-prob27 = error "Implement me!"
+prob27 n list = first [(x, y)| x <- list, y <- delete x list, x + y == n]
 
+first :: [a] -> Maybe a
+first []     = Nothing
+first (x:xs) = Just x
 ------------------------------------------------------------
 -- PROBLEM #28
 --
@@ -93,7 +112,7 @@ prob27 = error "Implement me!"
 -- заданному.
 -- Длина списка не превосходит 500
 prob28 :: Int -> [Int] -> Maybe (Int, Int, Int, Int)
-prob28 = error "Implement me!"
+prob28 n list = first [(v, x, y, z) | x <- list, y <- delete x list, z <- delete y (delete x list), v <- delete z (delete y (delete x list)), x + y + z + v == n]
 
 ------------------------------------------------------------
 -- PROBLEM #29
@@ -101,7 +120,12 @@ prob28 = error "Implement me!"
 -- Найти наибольшее число-палиндром, которое является
 -- произведением двух K-значных (1 <= K <= 3)
 prob29 :: Int -> Int
-prob29 k = error "Implement me!"
+prob29 k = maximum [x * y|
+    x <- [minNumber..maxNumber], y <-[minNumber..maxNumber],
+    (prob25 . toInteger) (x*y)]
+      where
+        minNumber = 10 ^ (k - 1)
+        maxNumber = 10 ^ k - 1
 
 ------------------------------------------------------------
 -- PROBLEM #30
@@ -109,7 +133,7 @@ prob29 k = error "Implement me!"
 -- Найти наименьшее треугольное число, у которого не меньше
 -- заданного количества делителей
 prob30 :: Int -> Integer
-prob30 = error "Implement me!"
+prob30 k = head (filter (\t -> length ([x | x <- [1..t], t `mod` x == 0]) >= k) (map (\n -> n * (n + 1) `div` 2) [0..]))
 
 ------------------------------------------------------------
 -- PROBLEM #31
@@ -117,7 +141,7 @@ prob30 = error "Implement me!"
 -- Найти сумму всех пар различных дружественных чисел,
 -- меньших заданного N (1 <= N <= 10000)
 prob31 :: Int -> Int
-prob31 = error "Implement me!"
+prob31 n = sum [x + y |x <- [1 .. n],y <- [x+1 .. n], prob26 (toInteger x) (toInteger y)]
 
 ------------------------------------------------------------
 -- PROBLEM #32
@@ -127,4 +151,4 @@ prob31 = error "Implement me!"
 -- указанного достоинства
 -- Сумма не превосходит 100
 prob32 :: [Int] -> Int -> [[Int]]
-prob32 = error "Implement me!"
+prob32 list n = [[x, y]| x <- list, y <- delete x list, x + y == n]
