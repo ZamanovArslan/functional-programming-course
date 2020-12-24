@@ -151,4 +151,4 @@ prob31 n = sum [x + y |x <- [1 .. n],y <- [x+1 .. n], prob26 (toInteger x) (toIn
 -- указанного достоинства
 -- Сумма не превосходит 100
 prob32 :: [Int] -> Int -> [[Int]]
-prob32 list n = [[x, y]| x <- list, y <- delete x list, x + y == n]
+prob32 list n = filter ((==) n . sum) $ subsequences list
