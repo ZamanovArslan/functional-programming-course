@@ -1,14 +1,24 @@
 module Part3 where
-import Data.List (group, delete)
+import Data.List (group, delete, sort, nub)
 
 ------------------------------------------------------------
 -- PROBLEM #18
 --
 -- Проверить, является ли число N простым (1 <= N <= 10^9)
 prob18 :: Integer -> Bool
-prob18 k = if k > 1
-           then null [ x | x <- [2..k - 1], k `mod` x == 0]
-           else False
+prob18 1 = False
+prob18 2 = True
+prob18 n = getDividers n == [n]
+
+getDividers :: Integer -> [Integer]
+getDividers  = currentDividers 2
+  where
+    currentDividers :: Integer -> Integer -> [Integer]
+    currentDividers _ 1 = []
+    currentDividers divisor n
+      |divisor * divisor > n = [n]
+      |n `mod` divisor == 0 = divisor : currentDividers divisor (n `div` divisor)
+      |otherwise = currentDividers (succ divisor) n
 
 ------------------------------------------------------------
 -- PROBLEM #19
@@ -35,7 +45,14 @@ getPrimeDividers  = primeDividers 2
 -- Совершенное число равно сумме своих делителей (меньших
 -- самого числа)
 prob20 :: Integer -> Bool
-prob20 k = sum [x | x <- [1..k - 1], k `mod` x == 0] == k
+prob20 n = n == sum (divisors n)
+
+divisors :: Integral a => a -> [a]
+divisors n = (l++) $ nub
+  $ concat [[x, n `div` x] | x <- [2..floor . sqrt $ fromIntegral n],
+  n `mod` x == 0]
+    where
+      l = if n == 1 then [] else [1]
 
 ------------------------------------------------------------
 -- PROBLEM #21
@@ -43,7 +60,7 @@ prob20 k = sum [x | x <- [1..k - 1], k `mod` x == 0] == k
 -- Вернуть список всех делителей числа N (1<=N<=10^10) в
 -- порядке возрастания
 prob21 :: Integer -> [Integer]
-prob21 k = [ x | x <- [1..k], k `mod` x == 0]
+prob21 n = (sort . divisors) n ++ [n]
 
 ------------------------------------------------------------
 -- PROBLEM #22
