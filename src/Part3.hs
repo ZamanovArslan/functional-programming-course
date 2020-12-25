@@ -167,7 +167,7 @@ prob30 k = head (filter (\t -> length ([x | x <- [1..t], t `mod` x == 0]) >= k) 
 -- Найти сумму всех пар различных дружественных чисел,
 -- меньших заданного N (1 <= N <= 10000)
 prob31 :: Int -> Int
-prob31 n = sum [x + y |x <- [1 .. n],y <- [x+1 .. n], prob26 (toInteger x) (toInteger y)]
+prob31 n = sum [x + y | x <- [1 .. n], y <- [x+1 .. n], prob26 (toInteger x) (toInteger y)]
 
 ------------------------------------------------------------
 -- PROBLEM #32
@@ -177,4 +177,9 @@ prob31 n = sum [x + y |x <- [1 .. n],y <- [x+1 .. n], prob26 (toInteger x) (toIn
 -- указанного достоинства
 -- Сумма не превосходит 100
 prob32 :: [Int] -> Int -> [[Int]]
-prob32 list n = error "Implement me!"
+prob32 coins 0 = [[]]
+prob32 coins sum
+  | sum < 0 || null coins = []
+  | c == sum = [[c]]
+  | otherwise = prob32 cs sum ++ map (\x -> x ++ [c]) (prob32 coins (sum - c))
+  where (c:cs) = coins
