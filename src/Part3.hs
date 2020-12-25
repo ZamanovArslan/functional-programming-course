@@ -17,17 +17,16 @@ prob18 k = if k > 1
 -- разложении числа N (1 <= N <= 10^9). Простые делители
 -- должны быть расположены по возрастанию
 prob19 :: Integer -> [(Integer, Int)]
-prob19 n = map (\divs -> (head divs, length divs)) (group (getDivs n))
+prob19 n = map (\divs -> (head divs, length divs)) (group (getPrimeDividers n))
 
-getDivs :: Integer -> [Integer]
-getDivs  = getCurrentDivs 2
+getPrimeDividers :: Integer -> [Integer]
+getPrimeDividers  = primeDividers 2
   where
-    getCurrentDivs :: Integer -> Integer -> [Integer]
-    getCurrentDivs _ 1 = []
-    getCurrentDivs divisor n
-      |divisor * divisor > n = [n]
-      |n `mod` divisor == 0 = divisor : getCurrentDivs divisor (n `div` divisor)
-      |otherwise = getCurrentDivs (succ divisor) n
+    primeDividers :: Integer -> Integer -> [Integer]
+    primeDividers _ 1 = []
+    primeDividers divider n | divider * divider > n = [n]
+                            | n `mod` divider == 0 = divider : primeDividers divider (n `div` divider)
+                            | otherwise = primeDividers (succ divider) n
 
 ------------------------------------------------------------
 -- PROBLEM #20

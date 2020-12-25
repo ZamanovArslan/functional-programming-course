@@ -2,6 +2,7 @@ module Part2 where
 
 import Part2.Types
 
+
 ------------------------------------------------------------
 -- PROBLEM #6
 --
