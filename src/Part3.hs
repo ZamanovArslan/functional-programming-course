@@ -17,7 +17,7 @@ prob18 k = if k > 1
 -- разложении числа N (1 <= N <= 10^9). Простые делители
 -- должны быть расположены по возрастанию
 prob19 :: Integer -> [(Integer, Int)]
-prob19 k = map (\divs -> (head divs, length divs)) (group ([x | x <- [2..k - 1], k `mod` x == 0 && null [a | a <- [2..x - 1], x `mod` a == 0]]))
+prob19 k = map (\divs -> (head divs, length divs)) (group ([x | x <- [2..k], k `mod` x == 0 && null [a | a <- [2..x - 1], x `mod` a == 0]]))
 
 ------------------------------------------------------------
 -- PROBLEM #20
@@ -151,4 +151,4 @@ prob31 n = sum [x + y |x <- [1 .. n],y <- [x+1 .. n], prob26 (toInteger x) (toIn
 -- указанного достоинства
 -- Сумма не превосходит 100
 prob32 :: [Int] -> Int -> [[Int]]
-prob32 list n = filter ((==) n . sum) $ subsequences list
+prob32 list n = error "Implement me!"
